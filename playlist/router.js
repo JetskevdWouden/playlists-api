@@ -5,8 +5,6 @@ const auth = require('../auth/middelware');
 
 const router = new Router();
 
-// '/playlist
-//get all playlists
 router.get('/playlist', auth, (req, res, next) => {
     const thisUserId = req.user.id
     Playlist
@@ -14,7 +12,7 @@ router.get('/playlist', auth, (req, res, next) => {
             where: {
                 userId: thisUserId
             }
-        })               
+        })
         .then(playlists => {
             res
                 .status(200)
@@ -25,7 +23,6 @@ router.get('/playlist', auth, (req, res, next) => {
         .catch(error => next(error))
 })
 
-//add playlist
 router.post('/playlist', auth, (req, res, next) => {
     const newPlaylist = {
         name: req.body.name,
@@ -44,8 +41,6 @@ router.post('/playlist', auth, (req, res, next) => {
         .catch(error => next(error))
 })
 
-// '/playlist/:id'
-//get playlist by id with all songs
 router.get('/playlist/:id', auth, (req, res, next) => {
     const playlist_id = req.params.id
     const thisUserId = req.user.id
@@ -83,7 +78,6 @@ router.get('/playlist/:id', auth, (req, res, next) => {
         .catch(error => next(error))
 })
 
-//delete playlist by id
 router.delete('/playlist/:id', auth, (req, res, next) => {
     const playlist_id = req.params.id
     const thisUserId = req.user.id
@@ -113,7 +107,7 @@ router.delete('/playlist/:id', auth, (req, res, next) => {
                                 message: `PLAYLIST WITH ID ${playlist_id} HAS BEEN DELETED`
                             })
                     })
-                
+
             }
         })
         .catch(error => next(error))

@@ -5,9 +5,6 @@ const auth = require('../auth/middelware');
 
 const router = new Router();
 
-// '/users'
-// email password and password_confirmation
-//add user
 router.post('/users', (req, res, next) => {
     const user = {
         email: req.body.email,
@@ -16,9 +13,7 @@ router.post('/users', (req, res, next) => {
     }
     if (user.email && user.password && user.password_confirmation) {
         user.password = bcrypt.hashSync(req.body.password, 10)
-        //check password
         if (bcrypt.compareSync(user.password_confirmation, user.password)) {
-            //make user
             User
                 .create(user)
                 .then(user => {
@@ -32,7 +27,6 @@ router.post('/users', (req, res, next) => {
                 })
                 .catch(error => next(error))
         } else {
-            //passwords dont match
             res
                 .status(422)
                 .send({
@@ -40,7 +34,6 @@ router.post('/users', (req, res, next) => {
                 })
         }
     } else {
-        //fill in all fields
         res
             .status(400)
             .send({

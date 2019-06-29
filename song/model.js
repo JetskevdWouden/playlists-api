@@ -1,9 +1,6 @@
 const Playlist = require('../playlist/model');
-// const User = require('../user/model');
 const Sequelize = require('sequelize');
-const db = require ('../db');
-
-//song can only be on one playlist
+const db = require('../db');
 
 const Song = db.define(
     'song',
@@ -21,7 +18,7 @@ const Song = db.define(
             field: 'album_title'
         }
     },
-    {tableName: 'songs'}
+    { tableName: 'songs' }
 );
 
 Song.belongsTo(Playlist);

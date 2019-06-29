@@ -5,9 +5,6 @@ const auth = require('../auth/middelware');
 
 const router = new Router();
 
-// '/playlist/:id/songs'
-//POST - user add song to playlist
-///***add check if song is already in another playlist --> not allowed***
 router.post('/playlist/:id/songs', auth, (req, res, next) => {
     const thisUserId = req.user.id
     const playlistId = req.params.id

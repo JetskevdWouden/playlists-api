@@ -1,5 +1,6 @@
-const {Router} = require('express');
+const { Router } = require('express');
 const Playlist = require('./model');
+const Song = require('../song/model')
 
 const router = new Router();
 
@@ -34,39 +35,47 @@ router.post('/playlist', (req, res, next) => {
 })
 
 // '/playlist/:id'
-//get playlist by id
+//get playist by id with all songs
+//***sadd error if playlist does not exist***
 router.get('/playlist/:id', (req, res, next) => {
-    const id = req.params.id
-    Playlist
-        .findByPk(id)
-        .then(playlist => {
+    const playlist_id = req.params.id
+    Promise.all([
+        Playlist.findByPk(playlist_id),
+        Song.findAll({
+            where: {
+                playlistId: playlist_id
+            }
+        })
+    ])
+        .then(([playlist, songs]) => {
             res
                 .status(200)
                 .send({
-                    message: `PLAYIST WITH ID: ${id}`,
-                    playist: playlist
+                    message: `SONGS ON PLAYLIST WITH ID: ${playlist_id}`,
+                    playlist_name: playlist.name,
+                    songs_on_playlist: songs
                 })
         })
         .catch(error => next(error))
 })
 
 //delete playlist by id
-//***DOES NOT WORK YET***
+//***add an error is playlist doe not exist***
 router.delete('/playlist/:id', (req, res, next) => {
-    const id = req.params.id
-        Playlist
-            .findByPk(id)
-            .destory()
-            .then(playlist => {
-                res
-                    .status(200)
-                    .send({
-                        message: `DELETED PLAYLIST WITH ID: ${id}`
-                        // deleted_playlist: playlist
-                    })
-            })
-            .catch(error => next(error))
-
+    const playlist_id = req.params.id
+    Playlist
+        .findByPk(playlist_id)
+        .then(playlist => {
+            playlist.destroy()
+        })
+        .then(response => {
+            res
+                .status(200)
+                .send({
+                    message: `DELETED PLAYLIST WITH ID: ${playlist_id}`
+                })
+        })
+        .catch(error => next(error))
 })
 
 module.exports = router;

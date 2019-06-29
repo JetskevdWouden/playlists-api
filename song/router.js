@@ -1,31 +1,32 @@
-const Playlist = require('../playlist/model');
-const {Router} = require('express');
+// const Playlist = require('../playlist/model');
+const { Router } = require('express');
 const Song = require('./model');
 
 const router = new Router();
 
-// '/playlists/:id/songs'
-//get all songs on that playist (where foreign key === :id)
-router.get('/playlist/:id/songs', (req, res, next) => {
+// '/playlist/:id/songs'
+//POST - user add song to playlist
+///***add error if playlist does not exist??///
+///***add check is song is already in another playlist --> not allowed***
+router.post('/playlist/:id/songs', (req, res, next) => {
     const playlistId = req.params.id
-    console.log(playlistId);
     Song
-        .findAll()              //where foreign key === playlistId
-        .then(songs => {
+        .create({
+            title: req.body.title,
+            artist: req.body.artist,
+            album: req.body.album,
+            playlistId: playlistId
+
+        })
+        .then(song => {
             res
-                .status(200)
+                .status(201)
                 .send({
-                    message: `ALL SONGS IN PLAYLIST WITH ID:${playlistId}`,
-                    songs: songs
+                    message: `NEW SONG CREATED WITH PLAYLISTID: ${playlistId}`,
+                    song: song
                 })
         })
         .catch(error => next(error))
-})
-
-
-//POST - user add song to playlist
-router.post('/playlist/:id/songs', (req, res, next) => {
-
 })
 
 

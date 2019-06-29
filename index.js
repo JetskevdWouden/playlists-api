@@ -1,11 +1,12 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const db = require('./db')
 
 //MODELS
 const playlist = require('./playlist/model');
 
 //ROUTERS
-
+const playlistRouter = require('./playlist/router');
 
 
 
@@ -13,10 +14,11 @@ const playlist = require('./playlist/model');
 const app = express();
 
 //CREATING A BODY-PARSER OBJECT
-
+const jsonParser = bodyParser.json()
 
 //CONFIGURING OUR SERVER
-//app.use
+app.use(jsonParser);
+app.use(playlistRouter);
 
 
 

@@ -14,7 +14,7 @@ router.get('/playlist', auth, (req, res, next) => {
             where: {
                 userId: thisUserId
             }
-        })                      //where user_id === user_id
+        })               
         .then(playlists => {
             res
                 .status(200)
@@ -66,7 +66,7 @@ router.get('/playlist/:id', auth, (req, res, next) => {
                     })
             } else if (playlist.userId !== thisUserId) {
                 res
-                    .status(401)
+                    .status(404)
                     .send({
                         message: "THIS IS NOT YOUR PLAYLIST DUDE"
                     })
@@ -98,7 +98,7 @@ router.delete('/playlist/:id', auth, (req, res, next) => {
                     })
             } else if (playlist.userId !== thisUserId) {
                 res
-                    .status(401)
+                    .status(404)
                     .send({
                         message: "YOU CANNOT DELETE SOMEONE ELSE'S PLAYLIST DUDE"
                     })

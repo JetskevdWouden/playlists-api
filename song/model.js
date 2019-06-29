@@ -1,4 +1,5 @@
 const Playlist = require('../playlist/model');
+// const User = require('../user/model');
 const Sequelize = require('sequelize');
 const db = require ('../db');
 

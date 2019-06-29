@@ -56,11 +56,4 @@ router.post('/tokens', (req, res, next) => {
     }
 })
 
-router.get('/test', auth, (req,res) => {
-    res
-        .send({
-            message: `THANKS FOR VISITING THE TEST ENDPOINT ${req.user.email}`
-        })
-})
-
 module.exports = router;

@@ -35,8 +35,7 @@ router.post('/playlist', (req, res, next) => {
 })
 
 // '/playlist/:id'
-//get playist by id with all songs
-//***sadd error if playlist does not exist***
+//get playlist by id with all songs
 router.get('/playlist/:id', (req, res, next) => {
     const playlist_id = req.params.id
     Promise.all([
@@ -48,32 +47,49 @@ router.get('/playlist/:id', (req, res, next) => {
         })
     ])
         .then(([playlist, songs]) => {
-            res
-                .status(200)
-                .send({
-                    message: `SONGS ON PLAYLIST WITH ID: ${playlist_id}`,
-                    playlist_name: playlist.name,
-                    songs_on_playlist: songs
-                })
+            if (!playlist) {
+                res
+                    .status(404)
+                    .send({
+                        message: "PLAYLIST WITH THAT ID DOES NOT EXIST"
+                    })
+            } else {
+                res
+                    .status(200)
+                    .send({
+                        message: `SONGS ON PLAYLIST WITH ID: ${playlist_id}`,
+                        playlist_name: playlist.name,
+                        songs_on_playlist: songs
+                    })
+            }
         })
         .catch(error => next(error))
 })
 
 //delete playlist by id
-//***add an error is playlist doe not exist***
 router.delete('/playlist/:id', (req, res, next) => {
     const playlist_id = req.params.id
     Playlist
         .findByPk(playlist_id)
         .then(playlist => {
-            playlist.destroy()
-        })
-        .then(response => {
-            res
-                .status(200)
-                .send({
-                    message: `DELETED PLAYLIST WITH ID: ${playlist_id}`
-                })
+            if (!playlist) {
+                res
+                    .status(404)
+                    .send({
+                        message: "PLAYLIST WITH THAT ID DOES NOT EXIST"
+                    })
+            } else {
+                playlist
+                    .destroy()
+                    .then(response => {
+                        res
+                            .status(200)
+                            .send({
+                                message: `PLAYLIST WITH ID ${playlist_id} HAS BEEN DELETED`
+                            })
+                    })
+                
+            }
         })
         .catch(error => next(error))
 })

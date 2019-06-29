@@ -5,10 +5,13 @@ const db = require('./db')
 //MODELS
 const playlist = require('./playlist/model');
 const song = require('./song/model');
+const user = require('./user/model');
 
 //ROUTERS
 const playlistRouter = require('./playlist/router');
 const songRouter = require('./song/router');
+const userRouter = require('./user/router')
+const authRouter = require('./auth/router');
 
 
 //CREATING OUR SERVER
@@ -21,8 +24,8 @@ const jsonParser = bodyParser.json()
 app.use(jsonParser);
 app.use(playlistRouter);
 app.use(songRouter);
-
-
+app.use(authRouter);
+app.use(userRouter);
 
 const port = process.env.PORT || 4000;
 

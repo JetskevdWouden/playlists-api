@@ -1,12 +1,13 @@
 const { Router } = require('express');
 const bcrypt = require('bcrypt');
 const User = require('./model');
+const auth = require('../auth/middelware');
 
 const router = new Router();
 
 // '/users'
 // email password and password_confirmation
-
+//add user
 router.post('/users', (req, res, next) => {
     const user = {
         email: req.body.email,
@@ -46,6 +47,19 @@ router.post('/users', (req, res, next) => {
                 message: "PLEASE FILL IN ALL FIELDS (EMAIL/PASSWORD/PASSWORD_CONFIRMATION"
             })
     }
+})
+
+router.get('/users', auth, (req, res, next) => {
+    User
+        .findAll()
+        .then(users => {
+            res
+                .status(200)
+                .send({
+                    users: users
+                })
+        })
+        .catch(error => next(error))
 })
 
 module.exports = router;

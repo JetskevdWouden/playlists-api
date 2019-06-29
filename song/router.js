@@ -1,13 +1,14 @@
 const Playlist = require('../playlist/model');
 const { Router } = require('express');
 const Song = require('./model');
+const auth = require('../auth/middelware');
 
 const router = new Router();
 
 // '/playlist/:id/songs'
 //POST - user add song to playlist
 ///***add check if song is already in another playlist --> not allowed***
-router.post('/playlist/:id/songs', (req, res, next) => {
+router.post('/playlist/:id/songs', auth, (req, res, next) => {
     const playlistId = req.params.id
     const songTitle = req.body.title
     const songArtist = req.body.artist

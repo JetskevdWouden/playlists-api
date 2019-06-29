@@ -22,10 +22,10 @@ const jsonParser = bodyParser.json()
 
 //CONFIGURING OUR SERVER
 app.use(jsonParser);
-app.use(playlistRouter);
-app.use(songRouter);
 app.use(authRouter);
 app.use(userRouter);
+app.use(playlistRouter);
+app.use(songRouter);;
 
 const port = process.env.PORT || 4000;
 

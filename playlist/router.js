@@ -1,14 +1,20 @@
 const { Router } = require('express');
 const Playlist = require('./model');
-const Song = require('../song/model')
+const Song = require('../song/model');
+const auth = require('../auth/middelware');
 
 const router = new Router();
 
 // '/playlist
 //get all playlists
-router.get('/playlist', (req, res, next) => {
+router.get('/playlist', auth, (req, res, next) => {
+    const thisUserId = req.user.id
     Playlist
-        .findAll()
+        .findAll({
+            where: {
+                userId: thisUserId
+            }
+        })                      //where user_id === user_id
         .then(playlists => {
             res
                 .status(200)
@@ -20,9 +26,13 @@ router.get('/playlist', (req, res, next) => {
 })
 
 //add playlist
-router.post('/playlist', (req, res, next) => {
+router.post('/playlist', auth, (req, res, next) => {
+    const newPlaylist = {
+        name: req.body.name,
+        userId: req.user.id
+    }
     Playlist
-        .create(req.body)
+        .create(newPlaylist)
         .then(playlist => {
             res
                 .status(201)
@@ -36,8 +46,9 @@ router.post('/playlist', (req, res, next) => {
 
 // '/playlist/:id'
 //get playlist by id with all songs
-router.get('/playlist/:id', (req, res, next) => {
+router.get('/playlist/:id', auth, (req, res, next) => {
     const playlist_id = req.params.id
+    const thisUserId = req.user.id
     Promise.all([
         Playlist.findByPk(playlist_id),
         Song.findAll({
@@ -53,6 +64,12 @@ router.get('/playlist/:id', (req, res, next) => {
                     .send({
                         message: "PLAYLIST WITH THAT ID DOES NOT EXIST"
                     })
+            } else if (playlist.userId !== thisUserId) {
+                res
+                    .status(401)
+                    .send({
+                        message: "THIS IS NOT YOUR PLAYLIST DUDE"
+                    })
             } else {
                 res
                     .status(200)
@@ -67,8 +84,9 @@ router.get('/playlist/:id', (req, res, next) => {
 })
 
 //delete playlist by id
-router.delete('/playlist/:id', (req, res, next) => {
+router.delete('/playlist/:id', auth, (req, res, next) => {
     const playlist_id = req.params.id
+    const thisUserId = req.user.id
     Playlist
         .findByPk(playlist_id)
         .then(playlist => {
@@ -78,6 +96,13 @@ router.delete('/playlist/:id', (req, res, next) => {
                     .send({
                         message: "PLAYLIST WITH THAT ID DOES NOT EXIST"
                     })
+            } else if (playlist.userId !== thisUserId) {
+                res
+                    .status(401)
+                    .send({
+                        message: "YOU CANNOT DELETE SOMEONE ELSE'S PLAYLIST DUDE"
+                    })
+
             } else {
                 playlist
                     .destroy()

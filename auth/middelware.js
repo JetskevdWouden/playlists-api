@@ -25,7 +25,7 @@ function auth(req, res, next) {
         }
     } else {
         res
-            .status(400)
+            .status(401)
             .send({
                 message: "PLEASE SUPLLY VALID CREDENTIALS"
             })
